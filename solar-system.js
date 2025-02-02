@@ -8,12 +8,13 @@ document.body.appendChild(renderer.domElement);
 // Add lighting
 const ambientLight = new THREE.AmbientLight(0x404040);
 scene.add(ambientLight);
-const pointLight = new THREE.PointLight(0xffffff, 1.5, 100);
+const pointLight = new THREE.PointLight(0xffffff, 1.5, 1000);
+pointLight.position.set(0, 0, 0);
 scene.add(pointLight);
 
 // Create the Sun
 const sunGeometry = new THREE.SphereGeometry(5, 32, 32);
-const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+const sunMaterial = new THREE.MeshPhongMaterial({ color: 0xffff00, emissive: 0xffff00 });
 const sun = new THREE.Mesh(sunGeometry, sunMaterial);
 scene.add(sun);
 
@@ -41,7 +42,8 @@ planets.forEach(planet => {
 });
 
 // Camera and controls
-camera.position.z = 100;
+camera.position.set(0, 50, 100);
+camera.lookAt(0, 0, 0);
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 
 // Handle window resize
