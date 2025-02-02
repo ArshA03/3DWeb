@@ -8,6 +8,24 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+// Texture loader
+const textureLoader = new THREE.TextureLoader();
+
+// Load textures
+const textures = {
+    Sun: textureLoader.load('textures/sun.png'),
+    Mercury: textureLoader.load('textures/mercury.png'),
+    Venus: textureLoader.load('textures/venus.png'),
+    Earth: {
+        map: textureLoader.load('textures/earth.png'),
+    },
+    Mars: textureLoader.load('textures/mars.png'),
+    Jupiter: textureLoader.load('textures/jupiter.png'),
+    Saturn: textureLoader.load('textures/saturn.png'),
+    Uranus: textureLoader.load('textures/uranus.png'),
+    Neptune: textureLoader.load('textures/neptune.png')
+};
+
 // Lighting
 const ambientLight = new THREE.AmbientLight(0x333333);
 scene.add(ambientLight);
@@ -23,26 +41,42 @@ controls.update();
 
 // Planet data (scaled for visualization)
 const planetData = [
-    { name: 'Sun', radius: 5, color: 0xffff00, orbitRadius: 0, speed: 0 },
-    { name: 'Mercury', radius: 0.8, color: 0x808080, orbitRadius: 10, speed: 0.04 },
-    { name: 'Venus', radius: 1.2, color: 0xffd700, orbitRadius: 15, speed: 0.015 },
-    { name: 'Earth', radius: 1.5, color: 0x0077be, orbitRadius: 20, speed: 0.01 },
-    { name: 'Mars', radius: 1, color: 0xff4500, orbitRadius: 25, speed: 0.008 },
-    { name: 'Jupiter', radius: 3, color: 0xffa500, orbitRadius: 32, speed: 0.002 },
-    { name: 'Saturn', radius: 2.5, color: 0xffd700, orbitRadius: 40, speed: 0.0009 },
-    { name: 'Uranus', radius: 1.8, color: 0x40e0d0, orbitRadius: 45, speed: 0.0004 },
-    { name: 'Neptune', radius: 1.8, color: 0x0000ff, orbitRadius: 50, speed: 0.0001 }
+    { name: 'Sun', radius: 5, orbitRadius: 0, speed: 0 },
+    { name: 'Mercury', radius: 0.8, orbitRadius: 10, speed: 0.04 },
+    { name: 'Venus', radius: 1.2, orbitRadius: 15, speed: 0.015 },
+    { name: 'Earth', radius: 1.5, orbitRadius: 20, speed: 0.01 },
+    { name: 'Mars', radius: 1, orbitRadius: 25, speed: 0.008 },
+    { name: 'Jupiter', radius: 3, orbitRadius: 32, speed: 0.002 },
+    { name: 'Saturn', radius: 2.5, orbitRadius: 40, speed: 0.0009 },
+    { name: 'Uranus', radius: 1.8, orbitRadius: 45, speed: 0.0004 },
+    { name: 'Neptune', radius: 1.8, orbitRadius: 50, speed: 0.0001 }
 ];
 
 // Create planets
 const planets = planetData.map(data => {
-    const geometry = new THREE.SphereGeometry(data.radius, 32, 32);
-    const material = new THREE.MeshPhongMaterial({
-        color: data.color,
-        shininess: 30,
-        emissive: data.name === 'Sun' ? data.color : 0x000000,
-        emissiveIntensity: data.name === 'Sun' ? 0.5 : 0
-    });
+    const geometry = new THREE.SphereGeometry(data.radius, 64, 64);
+    let material;
+
+    if (data.name === 'Earth') {
+        material = new THREE.MeshPhongMaterial({
+            map: textures.Earth.map,
+            normalMap: textures.Earth.normal,
+            specularMap: textures.Earth.specular,
+            shininess: 50
+        });
+    } else if (data.name === 'Sun') {
+        material = new THREE.MeshBasicMaterial({
+            map: textures[data.name],
+            emissive: 0xffff00,
+            emissiveIntensity: 0.5
+        });
+    } else {
+        material = new THREE.MeshPhongMaterial({
+            map: textures[data.name],
+            shininess: 30
+        });
+    }
+
     const planet = new THREE.Mesh(geometry, material);
     planet.position.x = data.orbitRadius;
     
@@ -53,7 +87,7 @@ const planets = planetData.map(data => {
             color: 0x444444,
             side: THREE.DoubleSide,
             transparent: true,
-            opacity: 0.3
+            opacity: 0
         });
         const orbit = new THREE.Mesh(orbitGeometry, orbitMaterial);
         orbit.rotation.x = Math.PI / 2;
@@ -92,6 +126,11 @@ window.addEventListener('resize', () => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+// Error handling for texture loading
+const onError = (err) => {
+    console.error('An error occurred loading the texture:', err);
+};
 
 // Animation loop
 function animate() {
