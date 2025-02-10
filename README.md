@@ -72,9 +72,3 @@ arsha03-3dweb/
 ## 📜 License
 
 Distributed under the MIT License. See `LICENSE` for more information.
-
-## 📧 Contact
-
-Your Name - [@your_twitter](https://twitter.com/your_handle) - your.email@example.com
-
-Project Link: [https://github.com/your-username/arsha03-3dweb](https://github.com/your-username/arsha03-3dweb)
