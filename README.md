@@ -2,8 +2,10 @@
 
 An interactive 3D visualization of our solar system built with Three.js. Explore the celestial dance of planets around the Sun with realistic orbital mechanics and scaled planetary representations.
 
-![Solar System Preview](https://via.placeholder.com/800x400.png?text=Solar+System+Preview) 
+![Solar System Preview](docs/Capture-2025-02-10-124401.png) 
 *Replace with actual screenshot*
+
+Check it out here: [https://arsha03.github.io/3DWeb/](https://arsha03.github.io/3DWeb/)
 
 ## 🚀 Features
 
